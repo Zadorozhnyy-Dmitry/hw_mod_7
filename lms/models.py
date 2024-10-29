@@ -4,6 +4,10 @@ from config.settings import NULLABLE
 
 
 class Course(models.Model):
+    """
+    Модель для курса
+    """
+
     name = models.CharField(
         max_length=100,
         verbose_name="Название курса",
@@ -28,6 +32,10 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    """
+    Модель для урока
+    """
+
     name = models.CharField(
         max_length=100, verbose_name="Урок", help_text="Укажите урок"
     )
