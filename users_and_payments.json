@@ -1,0 +1,110 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "12345",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-11-03T19:33:52.907Z",
+      "email": "test@test.test",
+      "phone": null,
+      "city": null,
+      "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "password": "12345",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-11-03T19:34:47.727Z",
+      "email": "test1@test.test",
+      "phone": null,
+      "city": null,
+      "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$870000$pU5osfTHzI3R6AoyuBe9Ky$YlOv04zEC88ehSsxdvFvtEgryJiYLj8q0jaxPe7yb6U=",
+      "last_login": "2024-11-03T20:46:25.105Z",
+      "is_superuser": true,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-11-03T20:45:33.270Z",
+      "email": "admin@admin.admin",
+      "phone": null,
+      "city": null,
+      "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "paid_date": "2024-11-04",
+      "course": null,
+      "lesson": null,
+      "amount": null,
+      "method": "перевод"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "paid_date": "2024-11-03",
+      "course": 4,
+      "lesson": null,
+      "amount": 10000,
+      "method": "transaction"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 3,
+    "fields": {
+      "user": 2,
+      "paid_date": "2024-11-02",
+      "course": 5,
+      "lesson": null,
+      "amount": 10000,
+      "method": "cash"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 4,
+    "fields": {
+      "user": 2,
+      "paid_date": "2024-11-01",
+      "course": null,
+      "lesson": 3,
+      "amount": 500,
+      "method": "cash"
+    }
+  }
+]

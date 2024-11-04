@@ -1,0 +1,70 @@
+[
+  {
+    "model": "lms.course",
+    "pk": 4,
+    "fields": {
+      "name": "python",
+      "description": null,
+      "preview": ""
+    }
+  },
+  {
+    "model": "lms.course",
+    "pk": 5,
+    "fields": {
+      "name": "java",
+      "description": null,
+      "preview": ""
+    }
+  },
+  {
+    "model": "lms.lesson",
+    "pk": 2,
+    "fields": {
+      "name": "lesson_pyt_1",
+      "course": 4,
+      "preview": "",
+      "video_url": null
+    }
+  },
+  {
+    "model": "lms.lesson",
+    "pk": 3,
+    "fields": {
+      "name": "lesson_pyt_2",
+      "course": 4,
+      "preview": "",
+      "video_url": null
+    }
+  },
+  {
+    "model": "lms.lesson",
+    "pk": 4,
+    "fields": {
+      "name": "lesson_pyt_3",
+      "course": 4,
+      "preview": "",
+      "video_url": null
+    }
+  },
+  {
+    "model": "lms.lesson",
+    "pk": 5,
+    "fields": {
+      "name": "lesson_jav_1",
+      "course": 5,
+      "preview": "",
+      "video_url": null
+    }
+  },
+  {
+    "model": "lms.lesson",
+    "pk": 6,
+    "fields": {
+      "name": "lesson_jav_2",
+      "course": 5,
+      "preview": "",
+      "video_url": null
+    }
+  }
+]
