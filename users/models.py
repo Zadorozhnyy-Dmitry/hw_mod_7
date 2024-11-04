@@ -24,7 +24,7 @@ class User(AbstractUser):
         upload_to="users/avatars",
         verbose_name="Аватар",
         help_text="Загрузите фото",
-        **NULLABLE
+        **NULLABLE,
     )
 
     USERNAME_FIELD = "email"
@@ -39,26 +39,32 @@ class Payment(models.Model):
     """
     Класс для платежей
     """
-    METHOD_CHOICES = {
-        ('cash', 'наличные'),
-        ('transaction', 'перевод')
-    }
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь', **NULLABLE)
-    paid_date = models.DateField(default=datetime.now, verbose_name='Дата оплаты', **NULLABLE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', **NULLABLE)
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE)
-    amount = models.PositiveSmallIntegerField(verbose_name='Сумма оплаты', **NULLABLE)
+
+    METHOD_CHOICES = {("cash", "наличные"), ("transaction", "перевод")}
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Пользователь", **NULLABLE
+    )
+    paid_date = models.DateField(
+        default=datetime.now, verbose_name="Дата оплаты", **NULLABLE
+    )
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, verbose_name="Оплаченный курс", **NULLABLE
+    )
+    lesson = models.ForeignKey(
+        Lesson, on_delete=models.CASCADE, verbose_name="Оплаченный урок", **NULLABLE
+    )
+    amount = models.PositiveSmallIntegerField(verbose_name="Сумма оплаты", **NULLABLE)
     method = models.CharField(
         max_length=20,
         choices=METHOD_CHOICES,
-        default='перевод',
-        verbose_name='Метод платежа',
-        **NULLABLE
+        default="transaction",
+        verbose_name="Метод платежа",
+        **NULLABLE,
     )
 
     def __str__(self):
-        return f'{self.user} - оплатил за {self.course if self.course else self.lesson}'
+        return f"{self.user} - оплатил за {self.course if self.course else self.lesson}"
 
     class Meta:
-        verbose_name = 'Платеж'
-        verbose_name_plural = 'Платежи'
+        verbose_name = "Платеж"
+        verbose_name_plural = "Платежи"
