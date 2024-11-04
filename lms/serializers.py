@@ -19,10 +19,15 @@ class CourseDetailSerializer(ModelSerializer):
     """
 
     count_lessons = SerializerMethodField()
+    lessons = SerializerMethodField()
 
     @staticmethod
     def get_count_lessons(course):
         return Lesson.objects.filter(course=course.pk).count()
+
+    @staticmethod
+    def get_lessons(course):
+        return [lesson.name for lesson in Lesson.objects.filter(course=course)]
 
     class Meta:
         model = Course
