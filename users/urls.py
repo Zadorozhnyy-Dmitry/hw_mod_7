@@ -1,17 +1,22 @@
 from django.urls import path
-from rest_framework.routers import SimpleRouter
+from rest_framework.permissions import AllowAny
 
 from users.apps import UsersConfig
-from users.views import PaymentCreateAPIView, PaymentListAPIView, UserViewSet
+from users.views import PaymentCreateAPIView, PaymentListAPIView, UserListAPIView, UserCreateAPIView
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 app_name = UsersConfig.name
 
-# url for users
-router = SimpleRouter()
-router.register(
-    "",
-    UserViewSet,
-)
+# # url for users
+# router = SimpleRouter()
+# router.register(
+#     "",
+#     UserViewSet,
+# )
 
 # urls for payments
 urlpatterns = [
@@ -21,6 +26,13 @@ urlpatterns = [
     path(
         "payments/create/", PaymentCreateAPIView.as_view(), name="payment-create"
     ),  # создание платежа
+
+    # эндпоинты для авторизации
+    path('login/', TokenObtainPairView.as_view(permission_classes=(AllowAny,)), name='login'),
+    path('api/token/refresh/', TokenRefreshView.as_view(permission_classes=(AllowAny,)), name='token_refresh'),
+    # эндпоинты для пользователей
+    path('', UserListAPIView.as_view(), name='users-list'),     # вывод списка пользователей
+    path('register/', UserCreateAPIView.as_view(), name='users-register'),  # регистрация пользователя
 ]
 
-urlpatterns += router.urls
+# urlpatterns += router.urls
