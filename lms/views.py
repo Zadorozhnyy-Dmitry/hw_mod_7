@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from lms.models import Course, Lesson
 from lms.serializers import (CourseDetailSerializer, CourseSerializer,
                              LessonSerializer)
+from users.permissions import IsModer
 
 
 class CourseViewSet(ModelViewSet):
@@ -28,6 +29,19 @@ class CourseViewSet(ModelViewSet):
         course.owner = self.request.user
         course.save()
 
+    def get_permissions(self):
+        """
+        Права доступа для модератора
+        :return:
+        """
+        # запрет модератору создавать и удалять курс
+        if self.action in ['create', 'destroy', ]:
+            self.permission_classes = (~IsModer,)
+        # разрешение модератору редактировать и просматривать курс
+        elif self.action in ['update', 'retrieve']:
+            self.permission_classes = (IsModer,)
+        return super().get_permissions()
+
 
 class LessonCreateAPIView(CreateAPIView):
     """
@@ -36,6 +50,8 @@ class LessonCreateAPIView(CreateAPIView):
 
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    # запрет модератору создавать урок
+    permission_classes = [~IsModer,]
 
     def perform_create(self, serializer):
         """
@@ -80,3 +96,5 @@ class LessonDestroyAPIView(DestroyAPIView):
 
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    # запрет модератору удалять урок
+    permission_classes = [~IsModer,]
