@@ -1,6 +1,6 @@
 from django.db import models
 
-from config.settings import NULLABLE, AUTH_USER_MODEL
+from config.settings import AUTH_USER_MODEL, NULLABLE
 
 
 class Course(models.Model):
@@ -22,7 +22,9 @@ class Course(models.Model):
         help_text="Загрузите превью",
         **NULLABLE,
     )
-    owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Владелец', **NULLABLE)
+    owner = models.ForeignKey(
+        AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name="Владелец", **NULLABLE
+    )
 
     def __str__(self):
         return f"{self.name}"
@@ -54,7 +56,9 @@ class Lesson(models.Model):
         **NULLABLE,
     )
     video_url = models.URLField(verbose_name="Ссылка на видео", **NULLABLE)
-    owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Владелец', **NULLABLE)
+    owner = models.ForeignKey(
+        AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name="Владелец", **NULLABLE
+    )
 
     def __str__(self):
         return f"{self.name}"

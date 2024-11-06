@@ -4,7 +4,8 @@ from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny
 
 from users.models import Payment, User
-from users.serializers import PaymentSerializer, UserSerializer, UserCreateSerializer
+from users.serializers import (PaymentSerializer, UserCreateSerializer,
+                               UserSerializer)
 
 
 class UserListAPIView(ListAPIView):
@@ -20,6 +21,7 @@ class UserCreateAPIView(CreateAPIView):
     """
     Контроллер для регистрации пользователя
     """
+
     serializer_class = UserCreateSerializer
     queryset = User.objects.all()
     permission_classes = (AllowAny,)

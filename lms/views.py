@@ -1,12 +1,13 @@
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
                                      UpdateAPIView)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from lms.models import Course, Lesson
 from lms.serializers import (CourseDetailSerializer, CourseSerializer,
                              LessonSerializer)
-from users.permissions import IsModer
+from users.permissions import IsModer, IsOwner
 
 
 class CourseViewSet(ModelViewSet):
@@ -31,15 +32,17 @@ class CourseViewSet(ModelViewSet):
 
     def get_permissions(self):
         """
-        Права доступа для модератора
-        :return:
+        Права доступа
         """
-        # запрет модератору создавать и удалять курс
-        if self.action in ['create', 'destroy', ]:
+        # модератор не может создавать курс
+        if self.action == "create":
             self.permission_classes = (~IsModer,)
-        # разрешение модератору редактировать и просматривать курс
-        elif self.action in ['update', 'retrieve']:
-            self.permission_classes = (IsModer,)
+        # изменить или детально просмотреть курс может или модератор, или владелец
+        elif self.action in ["update", "retrieve"]:
+            self.permission_classes = (IsModer | IsOwner,)
+        # удалить курс может только владелец
+        elif self.action == "destroy":
+            self.permission_classes = (~IsModer | IsOwner,)
         return super().get_permissions()
 
 
@@ -50,8 +53,11 @@ class LessonCreateAPIView(CreateAPIView):
 
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    # запрет модератору создавать урок
-    permission_classes = [~IsModer,]
+    # создавать урок может любой авторизированный пользователь кроме модератора
+    permission_classes = (
+        ~IsModer,
+        IsAuthenticated,
+    )
 
     def perform_create(self, serializer):
         """
@@ -78,6 +84,8 @@ class LessonRetrieveAPIView(RetrieveAPIView):
 
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    # Детальный просмотр только модератор или владелец
+    permission_classes = (IsModer | IsOwner,)
 
 
 class LessonUpdateAPIView(UpdateAPIView):
@@ -87,6 +95,8 @@ class LessonUpdateAPIView(UpdateAPIView):
 
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    # Изменять только модератор или владелец
+    permission_classes = (IsModer | IsOwner,)
 
 
 class LessonDestroyAPIView(DestroyAPIView):
@@ -96,5 +106,5 @@ class LessonDestroyAPIView(DestroyAPIView):
 
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    # запрет модератору удалять урок
-    permission_classes = [~IsModer,]
+    # удалять только владелец
+    permission_classes = (IsOwner,)
