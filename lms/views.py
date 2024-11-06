@@ -20,6 +20,14 @@ class CourseViewSet(ModelViewSet):
             return CourseDetailSerializer
         return CourseSerializer
 
+    def perform_create(self, serializer):
+        """
+        Автоматическая запись пользователя в атрибут owner
+        """
+        course = serializer.save()
+        course.owner = self.request.user
+        course.save()
+
 
 class LessonCreateAPIView(CreateAPIView):
     """
@@ -28,6 +36,14 @@ class LessonCreateAPIView(CreateAPIView):
 
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+
+    def perform_create(self, serializer):
+        """
+        Автоматическая запись пользователя в атрибут owner
+        """
+        lesson = serializer.save()
+        lesson.owner = self.request.user
+        lesson.save()
 
 
 class LessonListAPIView(ListAPIView):
