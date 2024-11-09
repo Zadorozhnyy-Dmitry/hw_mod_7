@@ -1,11 +1,14 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, get_object_or_404
 from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-from users.models import Payment, User
+from lms.models import Course
+from users.models import Payment, User, Subs
 from users.serializers import (PaymentSerializer, UserCreateSerializer,
-                               UserSerializer)
+                               UserSerializer, SubsSerializer)
 
 
 class UserListAPIView(ListAPIView):
@@ -55,3 +58,26 @@ class PaymentCreateAPIView(CreateAPIView):
 
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
+
+
+class SubsAPIView(APIView):
+    queryset = Subs.objects.all()
+    serializer_class = SubsSerializer
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        course_id = request.data.get('course')
+        course_item = get_object_or_404(Course, id=course_id)
+        subs_item = Subs.objects.filter(user=user, course=course_item)
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'Вы отписались'
+        else:
+            Subs.objects.create(user=user, course=course_item)
+            message = 'Вы подписались'
+        return Response({"message": message})
+
+
+class SubsListAPIView(ListAPIView):
+    serializer_class = SubsSerializer
+    queryset = Subs.objects.all()

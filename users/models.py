@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from config.settings import NULLABLE
+from config.settings import NULLABLE, AUTH_USER_MODEL
 from lms.models import Course, Lesson
 
 
@@ -68,3 +68,16 @@ class Payment(models.Model):
     class Meta:
         verbose_name = "Платеж"
         verbose_name_plural = "Платежи"
+
+
+class Subs(models.Model):
+    """Модель для подписки"""
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь', **NULLABLE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс', **NULLABLE)
+
+    def __str__(self):
+        return f'Пользователь {self.user} - подписан на {self.course}'
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'

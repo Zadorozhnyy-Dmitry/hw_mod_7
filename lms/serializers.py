@@ -2,16 +2,24 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField, U
 
 from lms.models import Course, Lesson
 from lms.validators import validate_valid_video_url
+from users.models import Subs
 
 
 class CourseSerializer(ModelSerializer):
     """
     Сериализатор для курса
     """
+    is_subs = SerializerMethodField()
 
     class Meta:
         model = Course
         fields = "__all__"
+
+    def get_is_subs(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return Subs.objects.filter(user=user, course=obj).exists()
+        return False
 
 
 class CourseDetailSerializer(ModelSerializer):

@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
 
 from users.apps import UsersConfig
 from users.views import (PaymentCreateAPIView, PaymentListAPIView,
-                         UserCreateAPIView, UserListAPIView)
+                         UserCreateAPIView, UserListAPIView, SubsAPIView, SubsListAPIView)
 
 app_name = UsersConfig.name
 
@@ -42,6 +42,9 @@ urlpatterns = [
     path(
         "register/", UserCreateAPIView.as_view(), name="users-register"
     ),  # регистрация пользователя
+    # эндпоинты для подписок
+    path('subs/create/', SubsAPIView.as_view(), name='subs_create'),
+    path('subs/', SubsListAPIView.as_view(), name='subs_list'),
 ]
 
 # urlpatterns += router.urls
