@@ -9,42 +9,21 @@ from users.views import (PaymentCreateAPIView, PaymentListAPIView,
 
 app_name = UsersConfig.name
 
-# # url for users
-# router = SimpleRouter()
-# router.register(
-#     "",
-#     UserViewSet,
-# )
-
 # urls for payments
 urlpatterns = [
-    path(
-        "payments/", PaymentListAPIView.as_view(), name="payment-list"
-    ),  # просмотр списка платежей
-    path(
-        "payments/create/", PaymentCreateAPIView.as_view(), name="payment-create"
-    ),  # создание платежа
+    path("payments/", PaymentListAPIView.as_view(), name="payment-list"),  # просмотр списка платежей
+    path("payments/create/", PaymentCreateAPIView.as_view(), name="payment-create"),  # создание платежа
+
     # эндпоинты для авторизации
-    path(
-        "login/",
-        TokenObtainPairView.as_view(permission_classes=(AllowAny,)),
-        name="login",
-    ),
-    path(
-        "api/token/refresh/",
-        TokenRefreshView.as_view(permission_classes=(AllowAny,)),
-        name="token_refresh",
-    ),
+    path("login/", TokenObtainPairView.as_view(permission_classes=(AllowAny,)), name="login", ),
+    path("api/token/refresh/", TokenRefreshView.as_view(permission_classes=(AllowAny,)), name="token_refresh", ),
+
     # эндпоинты для пользователей
-    path(
-        "", UserListAPIView.as_view(), name="users-list"
-    ),  # вывод списка пользователей
-    path(
-        "register/", UserCreateAPIView.as_view(), name="users-register"
-    ),  # регистрация пользователя
+    path("", UserListAPIView.as_view(), name="users-list"),  # вывод списка пользователей
+    path("register/", UserCreateAPIView.as_view(), name="users-register"),  # регистрация пользователя
+
     # эндпоинты для подписок
-    path('subs/create/', SubsAPIView.as_view(), name='subs_create'),
-    path('subs/', SubsListAPIView.as_view(), name='subs_list'),
+    path('subs/create/', SubsAPIView.as_view(), name='subs-create'),
+    path('subs/', SubsListAPIView.as_view(), name='subs-list'),
 ]
 
-# urlpatterns += router.urls
