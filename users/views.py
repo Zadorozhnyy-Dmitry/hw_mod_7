@@ -9,6 +9,7 @@ from lms.models import Course
 from users.models import Payment, User, Subs
 from users.serializers import (PaymentSerializer, UserCreateSerializer,
                                UserSerializer, SubsSerializer)
+from users.services import create_stripe_price, create_stripe_sessions
 
 
 class UserListAPIView(ListAPIView):
@@ -53,11 +54,19 @@ class PaymentListAPIView(ListAPIView):
 
 class PaymentCreateAPIView(CreateAPIView):
     """
-    Контроллер для просмотра списка платежей
+    Контроллер для создания платежа
     """
 
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
+
+    def perform_create(self, serializer):
+        payment = serializer.save(user=self.request.user)
+        price = create_stripe_price(payment.amount)
+        session_id, payment_link = create_stripe_sessions(price)
+        payment.session_id = session_id
+        payment.link = payment_link
+        payment.save()
 
 
 class SubsAPIView(APIView):

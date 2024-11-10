@@ -44,7 +44,7 @@ class Payment(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь", **NULLABLE
     )
-    paid_date = models.DateField(
+    paid_date = models.DateTimeField(
         default=datetime.now, verbose_name="Дата оплаты", **NULLABLE
     )
     course = models.ForeignKey(
@@ -61,6 +61,8 @@ class Payment(models.Model):
         verbose_name="Метод платежа",
         **NULLABLE,
     )
+    session_id = models.CharField(max_length=255, verbose_name='Id сессии', **NULLABLE)
+    link = models.URLField(max_length=400, verbose_name='Ссылка на оплату', **NULLABLE)
 
     def __str__(self):
         return f"{self.user} - оплатил за {self.course if self.course else self.lesson}"
