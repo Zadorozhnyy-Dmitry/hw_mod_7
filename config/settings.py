@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
 
     'drf_spectacular',
+    'django_celery_beat',
 
     "users",
     "lms",
@@ -127,7 +128,9 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Your project description',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
 }
 
 STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
+
+# redis
+LOCATION = os.getenv("LOCATION")
