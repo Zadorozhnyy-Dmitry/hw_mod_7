@@ -55,10 +55,13 @@ class CourseViewSet(ModelViewSet):
         Рассылка оповещения об изменениях курса
         """
         course = serializer.save()
+        email_list = []
         subs = Subs.objects.filter(course=course.pk)
-        message = f'Произведено обновление курса "{course.name}"'
         for sub in subs:
-            send_information_about_update_course.delay(sub.user.email, message)
+            email_list.append(sub.user.email)
+        if email_list:
+            message = f'Произведено обновление курса "{course.name}"'
+            send_information_about_update_course.delay(email_list, message)
 
 
 class LessonCreateAPIView(CreateAPIView):
@@ -83,10 +86,13 @@ class LessonCreateAPIView(CreateAPIView):
         lesson.save()
 
         # Рассылка оповещения о дополнении курса уроком
+        email_list = []
         subs = Subs.objects.filter(course=lesson.course.pk)
-        message = f'К курсу "{lesson.course.name}" добавлен урок "{lesson.name}"'
         for sub in subs:
-            send_information_about_update_course.delay(sub.user.email, message)
+            email_list.append(sub.user.email)
+        if email_list:
+            message = f'К курсу "{lesson.course.name}" добавлен урок "{lesson.name}"'
+            send_information_about_update_course.delay(email_list, message)
 
 
 class LessonListAPIView(ListAPIView):
@@ -123,10 +129,13 @@ class LessonUpdateAPIView(UpdateAPIView):
     def perform_update(self, serializer):
         """Рассылка оповещения об изменении урока в курсе"""
         lesson = serializer.save()
+        email_list = []
         subs = Subs.objects.filter(course=lesson.course.pk)
-        message = f'У курса "{lesson.course.name}" изменен урок "{lesson.name}"'
         for sub in subs:
-            send_information_about_update_course.delay(sub.user.email, message)
+            email_list.append(sub.user.email)
+        if email_list:
+            message = f'У курса "{lesson.course.name}" изменен урок "{lesson.name}"'
+            send_information_about_update_course.delay(email_list, message)
 
 
 class LessonDestroyAPIView(DestroyAPIView):
@@ -141,8 +150,11 @@ class LessonDestroyAPIView(DestroyAPIView):
 
     def perform_destroy(self, instance):
         """Рассылка оповещения об удалении урока в курсе"""
+        email_list = []
         subs = Subs.objects.filter(course=instance.course_id)
-        message = f'У курса "{instance.course.name}" удален урок "{instance.name}"'
         for sub in subs:
-            send_information_about_update_course.delay(sub.user.email, message)
+            email_list.append(sub.user.email)
+        if email_list:
+            message = f'У курса "{instance.course.name}" удален урок "{instance.name}"'
+            send_information_about_update_course.delay(email_list, message)
         instance.delete()
