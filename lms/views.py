@@ -8,7 +8,10 @@ from lms.models import Course, Lesson
 from lms.paginations import CustomPagination
 from lms.serializers import (CourseDetailSerializer, CourseSerializer,
                              LessonSerializer)
+from users.models import Subs
 from users.permissions import IsModer, IsOwner
+from rest_framework.decorators import action
+from lms.task import send_information_about_update_course
 
 
 class CourseViewSet(ModelViewSet):
@@ -47,6 +50,16 @@ class CourseViewSet(ModelViewSet):
             self.permission_classes = (~IsModer | IsOwner,)
         return super().get_permissions()
 
+    def perform_update(self, serializer):
+        """
+        Рассылка оповещения об изменениях курса
+        """
+        course = serializer.save()
+        subs = Subs.objects.filter(course=course.pk)
+        message = f'Произведено обновление курса "{course.name}"'
+        for sub in subs:
+            send_information_about_update_course.delay(sub.user.email, message)
+
 
 class LessonCreateAPIView(CreateAPIView):
     """
@@ -68,6 +81,12 @@ class LessonCreateAPIView(CreateAPIView):
         lesson = serializer.save()
         lesson.owner = self.request.user
         lesson.save()
+
+        # Рассылка оповещения о дополнении курса уроком
+        subs = Subs.objects.filter(course=lesson.course.pk)
+        message = f'К курсу "{lesson.course.name}" добавлен урок "{lesson.name}"'
+        for sub in subs:
+            send_information_about_update_course.delay(sub.user.email, message)
 
 
 class LessonListAPIView(ListAPIView):
@@ -101,6 +120,14 @@ class LessonUpdateAPIView(UpdateAPIView):
     # Изменять только модератор или владелец
     permission_classes = (IsModer | IsOwner,)
 
+    def perform_update(self, serializer):
+        """Рассылка оповещения об изменении урока в курсе"""
+        lesson = serializer.save()
+        subs = Subs.objects.filter(course=lesson.course.pk)
+        message = f'У курса "{lesson.course.name}" изменен урок "{lesson.name}"'
+        for sub in subs:
+            send_information_about_update_course.delay(sub.user.email, message)
+
 
 class LessonDestroyAPIView(DestroyAPIView):
     """
@@ -111,3 +138,11 @@ class LessonDestroyAPIView(DestroyAPIView):
     queryset = Lesson.objects.all()
     # удалять только владелец
     permission_classes = (IsOwner,)
+
+    def perform_destroy(self, instance):
+        """Рассылка оповещения об удалении урока в курсе"""
+        subs = Subs.objects.filter(course=instance.course_id)
+        message = f'У курса "{instance.course.name}" удален урок "{instance.name}"'
+        for sub in subs:
+            send_information_about_update_course.delay(sub.user.email, message)
+        instance.delete()
