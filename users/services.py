@@ -10,7 +10,7 @@ def create_stripe_price(amount):
     return stripe.Price.create(
         currency="rub",
         unit_amount=amount * 100,
-        product_data={"name": "Donation"},
+        product_data={"name": "Payment"},
     )
 
 
