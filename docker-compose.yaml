@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+
+  redis:
+    image: redis:latest
+    restart: on-failure
+    container_name: redis_container
+    expose:
+      - "6379"
+
   db:
     image: postgres
     restart: on-failure
@@ -20,14 +28,47 @@ services:
   app:
     build: .
     tty: true
+    container_name: app_container
     ports:
       - '8000:8000'
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - .:/app
+    env_file:
+      - .env
+
+  celery:
+    build: .
+    tty: true
+    container_name: celery_container
+    command: celery -A config worker -l INFO
+    restart: on-failure
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+      - app
+    env_file:
+      - .env
+
+  celery-beat:
+    build: .
+    tty: true
+    container_name: celery_beat_container
+    command: celery -A config beat -l INFO
+    restart: on-failure
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+      - app
+    env_file:
+      - .env
 
 volumes:
   pg_data:
